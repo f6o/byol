@@ -1,23 +1,21 @@
 package main
 
+// #cgo LDFLAGS: -ledit
+// #include <stdlib.h>
+// #include <editline/readline.h>
+// #include <editline/history.h>
+import "C"
 import (
-	"bufio"
+	"unsafe"
 	"fmt"
-	"os"
 )
 
 func main() {
-	scanner := bufio.NewScanner(os.Stdin)
+	cs := C.CString("lispy> ")
 	for {
-		fmt.Print("lispy> ")
-		if scanner.Scan() {
-			input := scanner.Text()
-			fmt.Printf("No you're a %s\n", input)
-		} else {
-			break
-		}
-		if scanner.Err() != nil {
-			break
-		}
+		input := C.readline(cs)
+		C.add_history(input)
+		fmt.Printf("No you're a %s\n", C.GoString(input))
+		C.free(unsafe.Pointer(input))
 	}
 }
