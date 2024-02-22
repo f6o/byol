@@ -8,6 +8,7 @@ import "C"
 import (
 	"fmt"
 	"unsafe"
+
 	"github.com/f6o/byol/parser"
 )
 
@@ -18,6 +19,7 @@ func main() {
 		C.add_history(input)
 		fmt.Printf("No you're a %s\n", C.GoString(input))
 		C.free(unsafe.Pointer(input))
-		fmt.Printf("%s\n", parser.Mpc_state_new())
+		state := parser.Mpc_state_new()
+		fmt.Printf("%d %d\n", state.Pos, state.Term)
 	}
 }

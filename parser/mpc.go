@@ -5,10 +5,10 @@ import "os"
 // State Type
 
 type mpc_state_t struct {
-	pos  int
-	row  int
-	col  int
-	term int
+	Pos  int
+	Row  int
+	Col  int
+	Term int
 }
 
 func mpc_state_invalid() *mpc_state_t {
