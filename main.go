@@ -39,8 +39,6 @@ import (
 	"fmt"
 	"regexp"
 	"unsafe"
-
-	"github.com/f6o/byol/parser"
 )
 
 func symbol(name string) *C.mpc_parser_t {
@@ -92,7 +90,5 @@ func main() {
 		}
 		fmt.Printf("No you're a %s\n", C.GoString(input))
 		C.free(unsafe.Pointer(input))
-		state := parser.Mpc_state_new()
-		fmt.Printf("%d %d\n", state.Pos, state.Term)
 	}
 }
