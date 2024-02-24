@@ -11,6 +11,17 @@ type mpc_state_t struct {
 	Term int
 }
 
+// Error Type
+
+type mpc_error_t struct {
+	state        mpc_state_t
+	expected_num int
+	filename     string
+	failure      string
+	expected     []string
+	received     rune
+}
+
 func mpc_state_invalid() *mpc_state_t {
 	return &mpc_state_t{-1, -1, -1, 0}
 }
