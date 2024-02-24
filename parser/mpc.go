@@ -67,7 +67,7 @@ type mpc_input_t struct {
 	mem       [INPUT_MEM_NUM]mpc_mem_t
 }
 
-func Mpc_input_new_string(filename string, s string) {
+func Mpc_input_new_string(filename string, s string) mpc_input_t {
 	var i mpc_input_t
 
 	i.filename = filename
@@ -82,5 +82,8 @@ func Mpc_input_new_string(filename string, s string) {
 	i.marks_num = 0
 	i.marks_slots = MARKS_MIN
 
-	i.last = '\0'
+	// set NULL
+	i.last = 0
+
+	return i
 }
