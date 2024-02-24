@@ -22,12 +22,12 @@ type mpc_error_t struct {
 	received     rune
 }
 
-func mpc_state_invalid() *mpc_state_t {
-	return &mpc_state_t{-1, -1, -1, 0}
+func mpc_state_invalid() mpc_state_t {
+	return mpc_state_t{-1, -1, -1, 0}
 }
 
-func Mpc_state_new() *mpc_state_t {
-	return &mpc_state_t{0, 0, 0, 0}
+func Mpc_state_new() mpc_state_t {
+	return mpc_state_t{0, 0, 0, 0}
 }
 
 type MPC_INPUT uint16
@@ -51,13 +51,13 @@ type mpc_input_t struct {
 
 	str    string // "char *string" in mpc.c
 	buffer string // char * in mpc.c
-	file   *os.File
+	file   os.File
 
 	suppress    int
 	backtrack   int
 	marks_slots int
 	marks_num   int
-	marks       *mpc_state_t
+	marks       mpc_state_t
 
 	lasts string // char * in mpc.c
 	last  rune   // char in mpc.c
@@ -65,4 +65,22 @@ type mpc_input_t struct {
 	mem_index int                 // size_t in mpc.c
 	mem_full  [INPUT_MEM_NUM]byte // char mem_full[MPC_INPUT_MEM_NUM] in mpc.c
 	mem       [INPUT_MEM_NUM]mpc_mem_t
+}
+
+func Mpc_input_new_string(filename string, s string) {
+	var i mpc_input_t
+
+	i.filename = filename
+	i.typenum = int(STRING)
+
+	i.state = Mpc_state_new()
+
+	i.str = s
+
+	i.suppress = 0
+	i.backtrack = 1
+	i.marks_num = 0
+	i.marks_slots = MARKS_MIN
+
+	i.last = '\0'
 }
