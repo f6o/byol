@@ -4,6 +4,7 @@ package main
 // #include <stdlib.h>
 // #include <editline/readline.h>
 // #include <editline/history.h>
+// #include "mpc/mpc.h"
 import "C"
 import (
 	"fmt"
@@ -13,7 +14,19 @@ import (
 	"github.com/f6o/byol/parser"
 )
 
+func symbol(name string) interface{}  {
+	cs := C.CString(name)
+	return C.mpc_sym(cs)
+}
+
 func main() {
+
+	adjective := C.mpc_or(4,
+		symbol("wow"),
+		symbol("many"),
+		symbol("so"),
+		symbol("such"))
+	
 	cs := C.CString("lispy> ")
 	for {
 		input := C.readline(cs)
