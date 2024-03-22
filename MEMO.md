@@ -1,4 +1,4 @@
-# Build your own lisp/micro parser combinator
+ # Build your own lisp/micro parser combinator
 
 * https://www.buildyourownlisp.com/
 * https://github.com/orangeduck/mpc
@@ -120,3 +120,23 @@ Function callingの手前まで。
 mpca_lang -> mpca_lang_st 
 
 mpc.cの1700行目からパーサになっている
+
+### Parsing: ASTをつくる
+
+mpcライブラリの仕事。
+
+#### ASTの構造
+
+* tag expr,number,regexなどのノードの型みたいなもの。ルールの定義につかう。
+* contents ノードの中身。空のときもある。
+* state このノードをパースしたときのパーサの状態。行数と列とか。
+* children 子ノード。ポインタで木の構造にする
+
+### Evaluation: ASTの評価する
+
+この章では逆ポーランド記法の式を評価する。
+
+* number そのまま数値をかえす
+* 2つの数値をつかって四則演算をする
+
+### Printing: ASTを印字する
