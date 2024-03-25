@@ -140,3 +140,33 @@ mpcライブラリの仕事。
 * 2つの数値をつかって四則演算をする
 
 ### Printing: ASTを印字する
+
+## Chapter 8 Error Handling
+
+* エラーは「式の結果のひとつ」
+* Lisp valueとして定義
+  * type int (enum)
+  * num long
+  * err int (enum)
+* エラーの評価
+  * eval_op: lval -> lval
+  * eval : AST -> lval
+* plumbling: つなげてつくるというのもプログラミングの性質。
+中身についてくわしく知ることなく、ソフトウェアを作成できる。
+
+
+## Chapter 9 S式
+
+* ポインタの話: structをコピーするとつらいから、アドレスでやりとりしよう
+* スタックとヒープ
+* S式の文法
+  * number
+  * symbol
+  * sexpr
+  * expr
+* lvalをS式むけに変更
+  * count int
+  * cell lval**
+* 式の読み込み: tag/contentsをつかってASTからS式にする
+* S式の印字は相互再帰でおこなう
+* S式の評価: 子の評価から
