@@ -16,7 +16,7 @@ mpcライブラリをつかって、逆ポーランド記法の式をパース�
 1. mpc_ast_deleteでメモリを解放する
 1. mpc_cleanup
 
-see [mpc/exmaple/foobar.c](mpc/exmaple/foobar.c)
+see [mpc/exmaple/foobar.c](mpc/example/foobar.c)
 
 ### 文法を定義する
 
@@ -32,7 +32,7 @@ mpca_lang(MPCA_LANG_DEFAULT,
   Number, Operator, Expr, Lispy);
 ```
 
-see [mpc/exmaple/lispy.c](mpc/exmaple/lispy.c)
+see [mpc/exmaple/lispy.c](mpc/example/lispy.c)
 
 ## Chapter 7 Evaluation
 
