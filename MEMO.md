@@ -3,7 +3,45 @@
 * https://www.buildyourownlisp.com/
 * https://github.com/orangeduck/mpc
 
-## mpc.hでのASTの定義
+## Chapter 6 Parsing
+
+mpcライブラリをつかって、逆ポーランド記法の式をパースする。
+
+### mpcライブラリの使い方
+
+1. mpc_newでパーサを定義する
+1. mpca_langで文法を定義する
+1. mpc_parseで入力をパースする
+1. mpc_ast_printで構文木を出力する
+1. mpc_ast_deleteでメモリを解放する
+1. mpc_cleanup
+
+see [mpc/exmaple/foobar.c](mpc/exmaple/foobar.c)
+
+### 文法を定義する
+
+```
+/* Define them with the following Language */
+mpca_lang(MPCA_LANG_DEFAULT,
+  "                                                     \
+    number   : /-?[0-9]+/ ;                             \
+    operator : '+' | '-' | '*' | '/' ;                  \
+    expr     : <number> | '(' <operator> <expr>+ ')' ;  \
+    lispy    : /^/ <operator> <expr>+ /$/ ;             \
+  ",
+  Number, Operator, Expr, Lispy);
+```
+
+see [mpc/exmaple/lispy.c](mpc/exmaple/lispy.c)
+
+## Chapter 7 Evaluation
+
+この章では逆ポーランド記法の式を評価する。
+
+* number そのまま数値をかえす
+* 2つの数値をつかって四則演算をする
+
+### mpc.hでのASTの定義
 
 ```
 mpc_ast_t {
@@ -15,7 +53,12 @@ mpc_ast_t {
 }
 ```
 
-## ASTの操作
+* tag expr,number,regexなどのノードの型みたいなもの。ルールの定義につかう。
+* contents ノードの中身。空のときもある。
+* state このノードをパースしたときのパーサの状態。行数と列とか。
+* children 子ノード。ポインタで木の構造にする
+
+### ASTの操作
 
 * new
 * build
@@ -30,20 +73,47 @@ mpc_ast_t {
 * get_index
 * get_child
 
-## ASTの走査順
+### ASTの走査順
 
 * pre
 * post
 
 `mpc_parse`の結果としてASTがある
 
-## Lisp Value
+## Chapter 8 Error Handling
 
-* lisp value, lval としてエラー、数字、シンボル、S式
-* read: AST -> lval
-* eval: lval -> lval
+### Lisp Value
 
-## quote
+* エラーは「式の結果のひとつ」
+* Lisp valueとして定義
+  * type int (enum)
+    * lisp value, lval としてエラー、数字、シンボル、S式
+  * num long
+  * err int (enum)
+* read/eval関数
+  * read: AST -> lval
+  * eval_op: lval -> lval
+  * eval : AST -> lval
+* plumbling: つなげてつくるというのもプログラミングの性質。
+中身についてくわしく知ることなく、ソフトウェアを作成できる。
+
+## Chapter 9 S式
+
+* ポインタの話: structをコピーするとつらいから、アドレスでやりとりしよう
+* スタックとヒープ
+* S式の文法
+  * number
+  * symbol
+  * sexpr
+  * expr
+* lvalをS式むけに変更
+  * count int
+  * cell lval**
+* 式の読み込み: tag/contentsをつかってASTからS式にする
+* S式の印字は相互再帰でおこなう
+* S式の評価: 子の評価から
+
+## Chapter 10 Q-Expressions
 
 Common Lispだと`'(1 2 3 4)`だけど、ここでは
 `{1 2 3 4}`という形式
@@ -51,7 +121,7 @@ Common Lispだと`'(1 2 3 4)`だけど、ここでは
 Chapter9まででS式のREPLができる
 Chapter11では環境を導入して、変数をつかえるようにした
 
-## Chapter 12 関数
+## Chapter 12 Functions
 
 * `\\`を関数のシンボルとしてあつかう
 * 関数もlvalとしてあつかう
@@ -97,76 +167,4 @@ struct lenv {
 
 Function callingの手前まで。
 
-## mpc/example/foobar.c
 
-1. mpc_newでパーサを定義する
-1. mpca_langで文法を定義する
-1. mpc_parseで入力をパースする
-1. mpc_ast_printで構文木を出力する
-1. mpc_ast_deleteでメモリを解放する
-1. mpc_cleanup
-
-
-## Ch.6 Parsing
-
-逆ポーランド記法の式をパースする
-
-## Chapter.7 eval
-
-* mpc_new,mpca_lang ... 文法
-* mpc_parse ... ASTをつくる
-* eval
-
-mpca_lang -> mpca_lang_st 
-
-mpc.cの1700行目からパーサになっている
-
-### Parsing: ASTをつくる
-
-mpcライブラリの仕事。
-
-#### ASTの構造
-
-* tag expr,number,regexなどのノードの型みたいなもの。ルールの定義につかう。
-* contents ノードの中身。空のときもある。
-* state このノードをパースしたときのパーサの状態。行数と列とか。
-* children 子ノード。ポインタで木の構造にする
-
-### Evaluation: ASTの評価する
-
-この章では逆ポーランド記法の式を評価する。
-
-* number そのまま数値をかえす
-* 2つの数値をつかって四則演算をする
-
-### Printing: ASTを印字する
-
-## Chapter 8 Error Handling
-
-* エラーは「式の結果のひとつ」
-* Lisp valueとして定義
-  * type int (enum)
-  * num long
-  * err int (enum)
-* エラーの評価
-  * eval_op: lval -> lval
-  * eval : AST -> lval
-* plumbling: つなげてつくるというのもプログラミングの性質。
-中身についてくわしく知ることなく、ソフトウェアを作成できる。
-
-
-## Chapter 9 S式
-
-* ポインタの話: structをコピーするとつらいから、アドレスでやりとりしよう
-* スタックとヒープ
-* S式の文法
-  * number
-  * symbol
-  * sexpr
-  * expr
-* lvalをS式むけに変更
-  * count int
-  * cell lval**
-* 式の読み込み: tag/contentsをつかってASTからS式にする
-* S式の印字は相互再帰でおこなう
-* S式の評価: 子の評価から
