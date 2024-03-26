@@ -2,6 +2,8 @@ package lispy
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 )
 
 type AST struct {
@@ -22,4 +24,36 @@ func (ast AST) Print(depth int) {
 			child.Print(depth + 1)
 		}
 	}
+}
+
+func eval(x int, op string, y int) int {
+	switch op {
+	case "+":
+		return x + y
+	case "-":
+		return x - y
+	case "*":
+		return x * y
+	case "/":
+		return x / y
+	default:
+		return 0
+	}
+}
+
+func (ast AST) Eval() int {
+	if strings.Contains(ast.Tag, "number") {
+		if i, err := strconv.Atoi(ast.Contents); err == nil {
+			return i
+		}
+	}
+
+	op := ast.Children[1].Contents
+	x := ast.Children[2].Eval()
+
+	for i := 3; strings.Contains(ast.Children[i].Tag, "expr"); i++ {
+		x = eval(x, op, ast.Children[i].Eval())
+	}
+	return x
+
 }
