@@ -13,5 +13,8 @@ shared: $(DIST)/libmpc.a
 foobar: $(DIST)/mpc.o example/foobar.c
 	$(CC) -Wall -static example/foobar.c $(DIST)/mpc.o -o $(DIST)/foobar
 
+lispy: $(DIST)/mpc.o example/lispy.c
+	$(CC) -Wall -static example/lispy.c $(DIST)/mpc.o -o $(DIST)/lispy
+
 clean:
 	rm -rf $(DIST)
