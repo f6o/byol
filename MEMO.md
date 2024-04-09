@@ -115,14 +115,35 @@ mpc_ast_t {
 
 ## Chapter 10 Q-Expressions
 
-Common Lispだと`'(1 2 3 4)`だけど、ここでは
-`{1 2 3 4}`という形式
+ここで触れたいのは追加機能の考え方。
+今回はインタプリタへの追加なので、Syntax, Representation, Parsing, Semanticsにわかれる
 
-Chapter9まででS式のREPLができる
-Chapter11では環境を導入して、変数をつかえるようにした
+* Common Lispだと`'(1 2 3 4)`だけど、ここでは `{1 2 3 4}`という形式
+* evalはさわらなくていい
+* 組み込み関数としてQ式を扱うものを定義: list, head, tail, join, eval
+
+
+## Chapter 11 Variables
+
+* Immutableな変数
+* name -> value という対応を環境 envrionment として定義
+* 変数シンボルの定義
+* lvalにlbuiltinという関数ポインタを追加
+  シンボルに紐づく関数を定義する
+* lvalでlbuiltinを使っている一方で、lbuiltinの定義でもlvalを使っている
+* lvalにLVAL_FUNを追加
+
+### Environment
+
+* 環境は lval* のリストと char* のリストを作り、要素の位置で対応付けする
+* `def {a b} 3 4` で `a` と `b` に値が対応付けられる
 
 ## Chapter 12 Functions
 
+* 関数とは
+  * 手続き
+  * 入力すると、値を返す
+  * partial computations/lambda calculus
 * `\\`を関数のシンボルとしてあつかう
 * 関数もlvalとしてあつかう
 
@@ -155,7 +176,7 @@ f 10 20
 
 * lambda式の導入
 * 環境の拡張
-
+  * ユーザ定義関数でもビルトインの関数を使いたい
 ```
 struct lenv {
     parent lenv*
@@ -164,7 +185,4 @@ struct lenv {
     vals   []string
 }
 ```
-
-Function callingの手前まで。
-
 
