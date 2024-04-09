@@ -204,4 +204,18 @@ struct lenv {
 * 関数定義のための手続きはlispy内で作れる
 * カリー化
 
+### Chapter 13 Conditionals
 
+* 組み込みとしてconditionを定義: `<, >, <=, >=`
+* 等号 `==, !=`
+
+再帰関数が定義できるようになる！
+
+### Chapter 14 Strings
+
+* lvalとしてstring型を追加: LVAL_STRで実態はchar *
+* printのときはエスケープをする
+* 文法
+* 入力となるソースコード上はエスケープ表現なので、readするときはunescapeをする
+* コメントの実装: `;` から行末まで
+  readするときにはなにもしないが、パーサでは読み込む
