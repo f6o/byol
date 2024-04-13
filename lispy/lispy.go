@@ -12,6 +12,18 @@ type AST struct {
 	Children []AST
 }
 
+type LispValue interface {
+	Print()
+}
+
+type LVNumber struct {
+	number int
+}
+
+func (number LVNumber) Print() {
+	fmt.Printf("lisp value number", number.number)
+}
+
 func (ast AST) Print(depth int) {
 	if ast.Contents != "" {
 		fmt.Printf("%*s '%s'\n", depth*2+len(ast.Tag), ast.Tag, ast.Contents)
