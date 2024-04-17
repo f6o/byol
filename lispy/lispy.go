@@ -24,6 +24,22 @@ func (number LVNumber) Print() {
 	fmt.Printf("lisp value number %d", number.number)
 }
 
+type LispValueErrorNumber int
+
+const (
+	ERR_DIV_ZERO LispValueErrorNumber = iota
+	ERR_ARGS_COUNT
+	ERR_TYPE_ASSERT
+)
+
+type LVError struct {
+	errno LispValueErrorNumber
+}
+
+func (err LVError) Print() {
+	fmt.Printf("lisp value error #%d", err.errno)
+}
+
 func (ast AST) Print(depth int) {
 	if ast.Contents != "" {
 		fmt.Printf("%*s '%s'\n", depth*2+len(ast.Tag), ast.Tag, ast.Contents)
