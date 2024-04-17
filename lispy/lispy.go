@@ -21,7 +21,7 @@ type LVNumber struct {
 }
 
 func (number LVNumber) Print() {
-	fmt.Printf("lisp value number", number.number)
+	fmt.Printf("lisp value number %d", number.number)
 }
 
 func (ast AST) Print(depth int) {
