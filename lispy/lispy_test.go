@@ -61,9 +61,8 @@ func TestEval(t *testing.T) {
 	root.Children = append(root.Children, c)
 	root.Children = append(root.Children, regex)
 
-	x := root.Eval()
 	ans := 520
-	if x != ans {
+	if x, ok := root.Eval().(LVNumber); ok && x.number != ans {
 		t.Errorf("Eval %d; expected %d", x, ans)
 	}
 }

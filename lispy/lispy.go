@@ -20,8 +20,8 @@ type LVNumber struct {
 	number int
 }
 
-func (number LVNumber) Print() {
-	fmt.Printf("lisp value number %d", number.number)
+func (n LVNumber) Print() {
+	fmt.Printf("lisp value number %d", n.number)
 }
 
 type LispValueErrorNumber int
@@ -54,34 +54,46 @@ func (ast AST) Print(depth int) {
 	}
 }
 
-func eval(x int, op string, y int) int {
+func eval(x LVNumber, op string, y LVNumber) LVNumber {
+	r := LVNumber{number: 0}
+
 	switch op {
 	case "+":
-		return x + y
+		r.number = x.number + y.number
 	case "-":
-		return x - y
+		r.number = x.number - y.number
 	case "*":
-		return x * y
+		r.number = x.number * y.number
 	case "/":
-		return x / y
-	default:
-		return 0
+		r.number = x.number / y.number
 	}
+
+	return r
 }
 
-func (ast AST) Eval() int {
+func (ast AST) Eval() LispValue {
 	if strings.Contains(ast.Tag, "number") {
 		if i, err := strconv.Atoi(ast.Contents); err == nil {
-			return i
+			return LVNumber{number: i}
 		}
 	}
 
 	op := ast.Children[1].Contents
-	x := ast.Children[2].Eval()
-
-	for i := 3; strings.Contains(ast.Children[i].Tag, "expr"); i++ {
-		x = eval(x, op, ast.Children[i].Eval())
+	var r LVNumber
+	
+	switch x := ast.Children[2].Eval().(type) {
+	case LVNumber:
+		for i := 3; strings.Contains(ast.Children[i].Tag, "expr"); i++ {
+			if y, ok := ast.Children[i].Eval().(LVNumber); ok {
+				r = eval(x, op, y)
+			} else {
+				// fails
+			}
+		}
+	default:
+		// fails
 	}
-	return x
+
+	return r
 
 }
