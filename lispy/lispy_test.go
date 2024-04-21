@@ -53,3 +53,23 @@ func TestEval(t *testing.T) {
 		t.Errorf("Eval %d; expected %d", x, ans)
 	}
 }
+
+func ast02() AST {
+	regex := AST{"regex", "", make([]AST, 0)}
+	return NewRoot([]AST{
+		regex,
+		NewOperator("/"),
+		NewNumber("1"),
+		NewNumber("0"),
+		regex,
+	})
+}
+
+func TestDivByZeroError(t *testing.T) {
+	root := ast02()
+	root.Print(0)
+	if x, ok := root.Eval().(LVError); !ok && x.errno != ERR_DIV_ZERO {
+		x.Print()
+		t.Errorf("did not got LVError")
+	}
+}

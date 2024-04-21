@@ -54,7 +54,7 @@ func (ast AST) Print(depth int) {
 	}
 }
 
-func eval(x LVNumber, op string, y LVNumber) LVNumber {
+func eval(x LVNumber, op string, y LVNumber) LispValue {
 	r := LVNumber{number: 0}
 
 	switch op {
@@ -65,7 +65,11 @@ func eval(x LVNumber, op string, y LVNumber) LVNumber {
 	case "*":
 		r.number = x.number * y.number
 	case "/":
-		r.number = x.number / y.number
+		if y.number == 0 {
+			return LVError{ERR_DIV_ZERO}
+		} else {
+			r.number = x.number / y.number
+		}
 	}
 
 	return r
@@ -79,19 +83,19 @@ func (ast AST) Eval() LispValue {
 	}
 
 	op := ast.Children[1].Contents
-	var r LVNumber
-	
+	var r LispValue
+
 	switch x := ast.Children[2].Eval().(type) {
 	case LVNumber:
 		for i := 3; strings.Contains(ast.Children[i].Tag, "expr"); i++ {
 			if y, ok := ast.Children[i].Eval().(LVNumber); ok {
 				r = eval(x, op, y)
 			} else {
-				// fails
+				return LVError{ERR_TYPE_ASSERT}
 			}
 		}
 	default:
-		// fails
+		return LVError{ERR_TYPE_ASSERT}
 	}
 
 	return r
