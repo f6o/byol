@@ -4,39 +4,51 @@ import (
 	"testing"
 )
 
+func NewRoot(children []AST) AST {
+	return AST{">", "", children}
+}
+
+func NewNode(children []AST) AST {
+	return AST{"expr|>", "", children}
+}
+
+func NewOperator(op string) AST {
+	return AST{"operator|char", op, make([]AST, 0)}
+}
+
+func NewNumber(num string) AST {
+	return AST{"expr|number|regex", num, make([]AST, 0)}
+}
+
+func NewChar(ch string) AST {
+	return AST{"char", ch, make([]AST, 0)}
+}
+
 func ast01() (AST, int) {
 	// * 10 (+ 1 51)
 	ans := 520
-	root := AST{">", "", make([]AST, 0)}
-
 	regex := AST{"regex", "", make([]AST, 0)}
-	a := AST{"operator|char", "*", make([]AST, 0)}
-	b := AST{"expr|number|regex", "10", make([]AST, 0)}
-	c := AST{"expr|>", "", make([]AST, 0)}
 
-	h := AST{"char", "(", make([]AST, 0)}
-	i := AST{"operator|char", "+", make([]AST, 0)}
-	j := AST{"expr|number|regex", "1", make([]AST, 0)}
-	k := AST{"expr|number|regex", "51", make([]AST, 0)}
-	l := AST{"char", ")", make([]AST, 0)}
-
-	c.Children = append(c.Children, h)
-	c.Children = append(c.Children, i)
-	c.Children = append(c.Children, j)
-	c.Children = append(c.Children, k)
-	c.Children = append(c.Children, l)
-
-	root.Children = append(root.Children, regex)
-	root.Children = append(root.Children, a)
-	root.Children = append(root.Children, b)
-	root.Children = append(root.Children, c)
-	root.Children = append(root.Children, regex)
+	root := NewRoot([]AST{
+		regex,
+		NewOperator("*"),
+		NewNumber("10"),
+		NewNode([]AST{
+			NewChar("("),
+			NewOperator("+"),
+			NewNumber("1"),
+			NewNumber("51"),
+			NewChar(")"),
+		}),
+		regex,
+	})
 
 	return root, ans
 }
 
 func TestEval(t *testing.T) {
 	root, ans := ast01()
+	root.Print(0)
 	if x, ok := root.Eval().(LVNumber); ok && x.number != ans {
 		t.Errorf("Eval %d; expected %d", x, ans)
 	}
