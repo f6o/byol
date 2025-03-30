@@ -1,5 +1,7 @@
 package lispy
 
+import "errors"
+
 type Parser struct {
 	src string
 	ast *AST
@@ -7,7 +9,8 @@ type Parser struct {
 
 func (p *Parser) Parse() error {
 	if p.ast != nil {
-		return new Error("already parsed")
+		return errors.New("already parsed")
 	}
 	// TODO
+	return nil
 }
