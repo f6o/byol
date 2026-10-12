@@ -50,7 +50,9 @@ func TestEval(t *testing.T) {
 	root, ans := ast01()
 	root.Print(0)
 	if x, ok := root.Eval().(LVNumber); ok && x.number != ans {
-		t.Errorf("Eval %d; expected %d", x, ans)
+		t.Errorf("Eval %d; expected %d", x.number, ans)
+	} else if !ok {
+		t.Errorf("Eval did not return LVNumber")
 	}
 }
 
@@ -68,8 +70,11 @@ func ast02() AST {
 func TestDivByZeroError(t *testing.T) {
 	root := ast02()
 	root.Print(0)
-	if x, ok := root.Eval().(LVError); !ok && x.errno != ERR_DIV_ZERO {
-		x.Print()
-		t.Errorf("did not got LVError")
+	x, ok := root.Eval().(LVError)
+	if !ok {
+		t.Fatalf("Eval did not return LVError")
+	}
+	if x.errno != ERR_DIV_ZERO {
+		t.Errorf("Eval did not return ERR_DIV_ZERO, got %d", x.errno)
 	}
 }
